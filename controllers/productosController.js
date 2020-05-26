@@ -17,13 +17,6 @@ module.exports = {
 		res.status(200).json(producto);
 	},
 
-	// TRAER DESTACADOS
-	getDestacados: async function (req, res, next) {
-		let productos = await productoModel.find({ destacado: 1 });
-		console.log(productos);
-		res.status(200).json(productos);
-	},
-
 	// CREAR
 	create: async function (req, res, next) {
 		let producto = new productoModel({
@@ -56,11 +49,71 @@ module.exports = {
 		}
 	},
 
+	// TRAER DESTACADOS
+	getDestacados: async function (req, res, next) {
+		let productos = await productoModel.find({ destacado: 1 });
+		console.log(productos);
+		res.status(200).json(productos);
+	},
+
 	// delete
 
-	// por precio entre max y min
+	// POR PRECIO MAX MIN
+	getByPrice: async function (req, res, next) {
+		try {
+			let productosEncontrados = await productoModel
+				.find({})
+				.where("precio")
+				.gte(req.params.min)
+				.where("precio")
+				.lte(req.params.max);
+
+			if (productosEncontrados != "") {
+				console.log("Se encontraron productos: ", productosEncontrados);
+				res.status(200).json({
+					status: 200,
+					message: "Se encontraron productos: ",
+					data: productosEncontrados,
+				});
+			} else {
+				console.log("no se encontraron productos con ese precio");
+				res.status(200).json({
+					status: 200,
+					message: "no se encontraron productos con ese precio",
+					data: null,
+				});
+			}
+			// si da error
+		} catch (error) {
+			console.log("Ha ocurrido un error: " + error);
+		}
+	},
 
 	// detalle
 
 	// por categoria
+	getByCategory: async function (req, res, next) {
+		try {
+			let productosEncontrados = await productoModel.find({}).where("categoria", req.params.id);
+
+			if (productosEncontrados != "") {
+				console.log("Se encontraron productos: ", productosEncontrados);
+				res.status(200).json({
+					status: 200,
+					message: "Se encontraron productos: ",
+					data: productosEncontrados,
+				});
+			} else {
+				console.log("no se encontraron productos con esa de esa categoria");
+				res.status(200).json({
+					status: 200,
+					message: "no se encontraron productos con esa categoria",
+					data: null,
+				});
+			}
+			// si da error
+		} catch (error) {
+			console.log("Ha ocurrido un error: " + error);
+		}
+	},
 };

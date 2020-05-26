@@ -3,7 +3,7 @@ var router = express.Router();
 
 var categoriasController = require("../controllers/categoriasController");
 
-// C.R.U.D.
+// GET /
 router.get("/", categoriasController.getAll);
 router.get("/:id", categoriasController.getById);
 router.post("/", categoriasController.create);
