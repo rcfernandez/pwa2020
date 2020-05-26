@@ -1,10 +1,8 @@
 var usuarioModel = require("../models/usuarioModel");
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
-
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 
 module.exports = {
-
 	// TRAER TODOS LOS USUARIOS
 	getAll: async function (req, res, next) {
 		let usuarios = await usuarioModel.find({});
@@ -32,29 +30,32 @@ module.exports = {
 
 	// LOGUEAR USUARIO
 	login: async function (req, res, next) {
-
-		let usuarioBuscado = await usuarioModel.findOne({ usuario: req.body.usuario }); // aca va findOne
+		let usuarioBuscado = await usuarioModel.findOne({
+			usuario: req.body.usuario,
+		}); // aca va findOne
 		console.log(usuarioBuscado);
 
 		if (usuarioBuscado) {
-			
 			//Validar el password
-			if(bcrypt.compareSync(req.body.contraseña,usuarioBuscado.contraseña)){
-				
+			if (bcrypt.compareSync(req.body.contraseña, usuarioBuscado.contraseña)) {
 				//Password valido , genero token
-				const token = jwt.sign( {usuario:usuarioBuscado},req.app.get('secretKey'),{expiresIn:'1h'} )
-				res.status(201).json({token:token})
-
-			} else{
+				const token = jwt.sign(
+					{ usuario: usuarioBuscado },
+					req.app.get("secretKey"),
+					{ expiresIn: "1h" }
+				);
+				res.status(201).json({ token: token });
+			} else {
 				//Password invalido
-				res.json({message:"Password incorrecto", data:null})
+				res.json({ message: "Password incorrecto", data: null });
 			}
-
 		} else {
 			//Arrojar error
-			res.json({message:"Usuario no existe", data:null})
+			res.json({ message: "Usuario no existe", data: null });
 		}
-
 	},
-	
+
+	// POST login-admin
+
+	// POST registro-admin
 };

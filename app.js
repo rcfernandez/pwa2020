@@ -7,11 +7,11 @@ const jwt = require('jsonwebtoken');
 
 // llama a la ruta en otra carpeta
 var indexRouter = require("./routes/index");
-
 //var usersRouter = require('./routes/users');
 var productosRouter = require("./routes/productos");
 var usuariosRouter = require("./routes/usuarios");
 var ventasRouter = require("./routes/ventas");
+var categoriasRouter = require("./routes/categorias");
 
 var app = express();
 
@@ -33,6 +33,7 @@ app.use("/", indexRouter); // omitimos porque esta pensado para hacer web
 app.use("/productos", productosRouter);
 app.use("/usuarios", usuariosRouter);
 app.use("/ventas", ventasRouter);
+app.use("/categorias", categoriasRouter);
 
 
 // VALIDAR USUARIO

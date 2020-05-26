@@ -40,4 +40,6 @@ module.exports = {
 			res.json({ status: "Error al cargar la Venta", data: err.message });
 		}
 	},
+
+	// GET ventas por usuario
 };

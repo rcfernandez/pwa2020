@@ -55,4 +55,12 @@ module.exports = {
 			console.log(error);
 		}
 	},
+
+	// delete
+
+	// por precio entre max y min
+
+	// detalle
+
+	// por categoria
 };
