@@ -5,7 +5,7 @@ module.exports = {
 	// TRAER TODO
 	getAll: async function (req, res, next) {
 		let productos = await productoModel.find({});
-		await categoriaModel.populate(productos, { path: "category" });
+		await categoriaModel.populate(productos, { path: "categoria" });
 		console.log(productos);
 		res.status(200).json(productos);
 	},
@@ -19,7 +19,7 @@ module.exports = {
 
 	// TRAER DESTACADOS
 	getDestacados: async function (req, res, next) {
-		let productos = await productoModel.find({ relevant: 1 });
+		let productos = await productoModel.find({ destacado: 1 });
 		console.log(productos);
 		res.status(200).json(productos);
 	},
@@ -27,11 +27,11 @@ module.exports = {
 	// CREAR
 	create: async function (req, res, next) {
 		let producto = new productoModel({
-			name: req.body.name,
-			price: req.body.price,
-			quantity: req.body.quantity,
-			category: req.body.category,
-			relevant: req.body.relevant,
+			descripcion: req.body.descripcion,
+			precio: req.body.precio,
+			cantidad: req.body.cantidad,
+			categoria: req.body.categoria,
+			destacado: req.body.destacado,
 		});
 		let data = await producto.save();
 		res.status(201).json({
@@ -45,9 +45,6 @@ module.exports = {
 	update: async function (req, res, next) {
 		try {
 			let data = await productoModel.findByIdAndUpdate(req.params.id, req.body);
-			// let data = await productoModel.update({ _id: req.params.id }, req.body, {
-			// 	multi: false,
-			// });
 			res.status(201).json({
 				status: "success",
 				message: "Se actualizo el producto correctamente",

@@ -7,27 +7,27 @@ const Schema = mongoose.Schema;
 // Declare the Schema of the Mongo model
 var usuarioSchema = new Schema({
 	
-	user: {
+	usuario: {
 		type: String,
 		required: [true, "El campo Usuario es requerido"],
 		unique: true,
 	},
 
-	name: {
+	nombre: {
 		type: String,
 		required: [true, "El campo Nombre es requerido"],
 		trim: true
 	},
 
-	pass: {
+	contraseña: {
 		type: String,
 		required: [true, "El campo Contraseña es requerido"],
 	},
 });
 
 usuarioSchema.pre('save',function(next){
-    console.log(this.pass)
-    this.pass = bcrypt.hashSync(this.pass,10);
+    console.log(this.contraseña)
+    this.contraseña = bcrypt.hashSync(this.contraseña,10);
     next();
 })
 

@@ -22,9 +22,9 @@ module.exports = {
 	// (CREAR) REGISTRAR USUARIO
 	create: async function (req, res, next) {
 		let usuario = await usuarioModel.create({
-			user: req.body.user,
-			name: req.body.name,
-			pass: req.body.pass,
+			usuario: req.body.usuario,
+			nombre: req.body.nombre,
+			contraseña: req.body.contraseña,
 		});
 		console.log(usuario);
 		res.status(201).json(usuario);
@@ -33,13 +33,13 @@ module.exports = {
 	// LOGUEAR USUARIO
 	login: async function (req, res, next) {
 
-		let usuarioBuscado = await usuarioModel.findOne({ user: req.body.user }); // aca va findOne
+		let usuarioBuscado = await usuarioModel.findOne({ usuario: req.body.usuario }); // aca va findOne
 		console.log(usuarioBuscado);
 
 		if (usuarioBuscado) {
 			
 			//Validar el password
-			if(bcrypt.compareSync(req.body.pass,usuarioBuscado.pass)){
+			if(bcrypt.compareSync(req.body.contraseña,usuarioBuscado.contraseña)){
 				
 				//Password valido , genero token
 				const token = jwt.sign( {usuario:usuarioBuscado},req.app.get('secretKey'),{expiresIn:'1h'} )

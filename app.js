@@ -11,7 +11,7 @@ var indexRouter = require("./routes/index");
 //var usersRouter = require('./routes/users');
 var productosRouter = require("./routes/productos");
 var usuariosRouter = require("./routes/usuarios");
-var comprasRouter = require("./routes/compras");
+var ventasRouter = require("./routes/ventas");
 
 var app = express();
 
@@ -29,11 +29,10 @@ app.use(express.static(path.join(__dirname, "public")));
 
 //aca se pregunta la ruta primero
 app.use("/", indexRouter); // omitimos porque esta pensado para hacer web
-
 //app.use('/users', usersRouter);
 app.use("/productos", productosRouter);
 app.use("/usuarios", usuariosRouter);
-app.use("/compras", comprasRouter);
+app.use("/ventas", ventasRouter);
 
 
 // VALIDAR USUARIO
