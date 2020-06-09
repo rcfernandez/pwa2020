@@ -6,7 +6,7 @@ var productosController = require("../controllers/productosController");
 // C.R.U.D.
 router.get("/", productosController.getAll);
 router.get("/:id", productosController.getById);
-router.post("/create", productosController.create);
+router.post("/", productosController.create);
 router.put("/:id", productosController.update);
 // falta delete
 

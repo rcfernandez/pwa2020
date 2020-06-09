@@ -3,6 +3,10 @@ const mongoose = require("../bin/mongodb");
 const Schema = mongoose.Schema;
 
 const productoSchema = new Schema({
+  nombre: {
+    type: String,
+    require: [true, "El campo Descripción es requerido"],
+  },
   descripcion: {
     type: String,
     require: [true, "El campo Descripción es requerido"],

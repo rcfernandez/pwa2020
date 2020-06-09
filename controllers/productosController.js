@@ -20,6 +20,7 @@ module.exports = {
 	// CREAR
 	create: async function (req, res, next) {
 		let producto = new productoModel({
+			nombre: req.body.nombre,
 			descripcion: req.body.descripcion,
 			precio: req.body.precio,
 			cantidad: req.body.cantidad,
