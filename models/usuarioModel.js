@@ -19,15 +19,30 @@ var usuarioSchema = new Schema({
 		trim: true
 	},
 
-	contraseña: {
+	apellido: {
 		type: String,
-		required: [true, "El campo Contraseña es requerido"],
+		trim: true
+	},
+
+	telefono: {
+		type: String,
+		trim: true
+	},
+
+	email: {
+		type: String,
+		required: [true, "El campo Email es requerido"],
+		trim: true
+	},
+
+	password: {
+		type: String,
 	},
 });
 
 usuarioSchema.pre('save',function(next){
-    console.log(this.contraseña)
-    this.contraseña = bcrypt.hashSync(this.contraseña,10);
+    console.log(this.password)
+    this.password = bcrypt.hashSync(this.password,10);
     next();
 })
 
