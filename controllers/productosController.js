@@ -50,6 +50,21 @@ module.exports = {
 		}
 	},
 
+	// ELIMINAR
+	delete: async function (req, res, next) {
+		try {
+			let data = await productoModel.findByIdAndDelete(req.params.id);
+			res.status(201).json({
+				status: "success",
+				message: "Se eliminó correctamente",
+				data: data,
+			});
+			console.log(data);
+		} catch (error) {
+			console.log("Ocurrió un error: " + error);
+		}
+    },
+
 	// TRAER DESTACADOS
 	getDestacados: async function (req, res, next) {
 		let productos = await productoModel.find({ destacado: 1 });

@@ -8,7 +8,7 @@ router.get("/", productosController.getAll);
 router.get("/:id", productosController.getById);
 router.post("/", productosController.create);
 router.put("/:id", productosController.update);
-// falta delete
+router.delete("/:id", productosController.delete);
 
 // OTROS
 router.get("/destacados", productosController.getDestacados);   // destacados
