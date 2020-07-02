@@ -46,4 +46,5 @@ usuarioSchema.pre('save',function(next){
     next();
 })
 
+usuarioSchema.plugin(mongoose.mongoosePaginate);
 module.exports = mongoose.model("usuarios", usuarioSchema); // USUARIOS responde al nombre de la coleccion en mongodb

@@ -3,9 +3,14 @@ var router = express.Router();
 
 var ventasController = require("../controllers/ventasController");
 
+
+router.get("/paginado/", ventasController.getAllPaginate);
+
 router.get("/", ventasController.getAll);
 router.get("/:id", ventasController.getById);
-router.post("/create", ventasController.create);
+router.post("/", ventasController.create);
+router.put("/:id", ventasController.update);
+router.delete("/:id", ventasController.delete);
 
 // EXPORT MODULE
 module.exports = router;

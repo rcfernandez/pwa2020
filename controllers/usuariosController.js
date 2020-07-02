@@ -9,6 +9,23 @@ module.exports = {
 			let usuarios = await usuarioModel.find({});
 			res.status(200).json(usuarios);
 			console.log(usuarios);
+
+		} catch (error) {
+			console.log(error);
+		}
+	},
+
+	getAllPaginate: async function (req, res, next) {
+		try {
+			let usuarios = await usuarioModel.paginate({},{
+				limit: 5,
+				sort:{usuario:1},
+				page:(req.query.page?req.query.page:1)
+			});
+
+			res.status(200).json(usuarios);
+			console.log(usuarios);
+
 		} catch (error) {
 			console.log(error);
 		}

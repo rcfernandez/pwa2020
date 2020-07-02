@@ -3,9 +3,30 @@ var categoriaModel = require("../models/categoriaModel");
 module.exports = {
 	// TRAER TODO
 	getAll: async function (req, res, next) {
-        let categorias = await categoriaModel.find({});
-        console.log(categorias);
-		res.status(200).json(categorias);
+		try {
+			let categorias = await categoriaModel.find({});
+			res.status(200).json(categorias);
+			console.log(categorias);
+			
+		} catch (error) {
+			console.log(error);
+		}
+	},
+
+	getAllPaginate: async function (req, res, next) {
+		try {
+			let categorias = await categoriaModel.paginate({},{
+				limit: 5,
+				sort:{descripcion:1},
+				page:(req.query.page?req.query.page:1)
+			});
+
+			res.status(200).json(categorias);
+			console.log(categorias);
+			
+		} catch (error) {
+			console.log(error);
+		}
 	},
 
 	// TRAER POR ID

@@ -4,6 +4,7 @@ var path = require("path");
 var cookieParser = require("cookie-parser");
 var logger = require("morgan");
 const jwt = require("jsonwebtoken");
+const cors = require('cors');
 
 // llama a la ruta en otra carpeta
 var indexRouter = require("./routes/index");
@@ -12,8 +13,11 @@ var productosRouter = require("./routes/productos");
 var usuariosRouter = require("./routes/usuarios");
 var ventasRouter = require("./routes/ventas");
 var categoriasRouter = require("./routes/categorias");
+const { Server } = require("http");
 
 var app = express();
+
+
 
 // view engine setup
 app.set("views", path.join(__dirname, "views"));
@@ -27,20 +31,25 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 
-
+app.use(cors({
+	origin: "http://localhost:4200", 
+	credentials:true
+	}
+  ));
 
 /** HEADER INICIO */
-app.use(function(req, res, next) {
-	res.setHeader('Access-Control-Allow-Origin','http://localhost:4200');
-	res.setHeader('Access-Control-Allow-Methods','GET,POST,DELETE,PUT');
-	next();
-  });
-  app.options("/*", function(req, res, next){
-	res.header('Access-Control-Allow-Origin', '*');
-	res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
-	res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Content-Length, X-Requested-With,x-access-token');
-	res.send(200);
-  });
+// app.use(function(req, res, next) {
+// 	res.setHeader('Access-Control-Allow-Origin','http://localhost:4200');
+// 	res.setHeader('Access-Control-Allow-Methods','GET,POST,DELETE,PUT');
+// 	next();
+//   });
+//   app.options("/*", function(req, res, next){
+// 	res.header('Access-Control-Allow-Origin', '*');
+// 	res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
+// 	res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Content-Length, X-Requested-With,x-access-token');
+// 	//res.header('Access-Control-Allow-Headers', 'Content-Type, Content-Length');
+// 	res.send(200);
+//   });
   /** HEADER FIN */
 
 

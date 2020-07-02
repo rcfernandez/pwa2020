@@ -5,7 +5,7 @@ const Schema = mongoose.Schema;
 const ventaSchema = new mongoose.Schema({
 	fecha: {
 		type: String,
-		default: Date.now,
+		require: [true, "El campo Fecha es requerido"],
 	},
 
 	usuario: {
@@ -24,10 +24,12 @@ const ventaSchema = new mongoose.Schema({
 		type: Number,
 		require: [true, "El campo Total es requerido"],
 	},
+	
 	estado: {
 		type: Number,
 		default: 0,
 	},
 });
 
+ventaSchema.plugin(mongoose.mongoosePaginate);
 module.exports = mongoose.model("ventas", ventaSchema);

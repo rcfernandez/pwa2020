@@ -2,6 +2,17 @@ const mongoose = require("../bin/mongodb");
 
 const Schema = mongoose.Schema;
 
+const imagenSchema = new Schema({ 
+  fieldname: "String",
+  originalname: "String",
+  encoding: "String",
+  mimetype: "String",
+  destination: "String",
+  filename: "String",
+  path: "String",
+  size: "String"
+});
+
 const productoSchema = new Schema({
   nombre: {
     type: String,
@@ -11,7 +22,10 @@ const productoSchema = new Schema({
     type: String,
     require: [true, "El campo Descripción es requerido"],
   },
-  precio: Number,
+  precio: {
+    type: Number,
+    default: 0,
+  },
   cantidad: {
     type: Number,
     default: 0,
@@ -24,6 +38,10 @@ const productoSchema = new Schema({
     type: Number,
     default: 0,
   },
+  imagen: imagenSchema
+
 });
 
+productoSchema.set('toJSON',{getters:true,virtuals:true})
+productoSchema.plugin(mongoose.mongoosePaginate);
 module.exports = mongoose.model("productos", productoSchema);

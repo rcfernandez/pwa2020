@@ -3,6 +3,13 @@ var router = express.Router();
 
 var productosController = require("../controllers/productosController");
 
+// OTROS
+router.post("/upload", productosController.upload);   
+router.get("/paginado/", productosController.getAllPaginate);   // paginado
+router.get("/destacados/", productosController.getDestacados);   // destacados
+router.get("/precio/:min/:max", productosController.getByPrice);     // por precio
+router.get("/categoria/:id", productosController.getByCategory);     // por categoria
+
 // C.R.U.D.
 router.get("/", productosController.getAll);
 router.get("/:id", productosController.getById);
@@ -10,10 +17,6 @@ router.post("/", productosController.create);
 router.put("/:id", productosController.update);
 router.delete("/:id", productosController.delete);
 
-// OTROS
-router.get("/destacados", productosController.getDestacados);   // destacados
-router.get("/precio/:min/:max", productosController.getByPrice);     // por precio
-router.get("/categoria/:id", productosController.getByCategory);     // por categoria
 
 
 //console.log(req.params.id); // cuando enviamos el JSON por parametro /id

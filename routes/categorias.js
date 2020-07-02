@@ -4,6 +4,8 @@ var router = express.Router();
 var categoriasController = require("../controllers/categoriasController");
 
 // GET /
+router.get("/paginado", categoriasController.getAllPaginate);
+
 router.get("/", categoriasController.getAll);
 router.get("/:id", categoriasController.getById);
 router.post("/", categoriasController.create);

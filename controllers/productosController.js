@@ -1,13 +1,43 @@
 var productoModel = require("../models/productoModel");
 var categoriaModel = require("../models/categoriaModel");
 
+// upload image
+var multer = require("multer");
+var DIR = "./public/images/productos/";
+var upload = multer({dest: DIR}).single("photo");
+
 module.exports = {
 	// TRAER TODO
 	getAll: async function (req, res, next) {
-		let productos = await productoModel.find({});
-		await categoriaModel.populate(productos, { path: "categoria" });
-		console.log(productos);
-		res.status(200).json(productos);
+		try {
+			let productos = await productoModel.find({});
+			await categoriaModel.populate(productos, { path: "categoria" });
+			console.log(productos);
+			res.status(200).json(productos);
+			
+		} catch (error) {
+			console.log(error);
+			next();
+		}
+	},
+
+	getAllPaginate: async function (req, res, next) {
+		try {
+			let productos = await productoModel.paginate({},{
+				//select: '' ,
+				populate: 'categoria',
+				 limit: 50,
+				sort:{nombre:1},
+				page:(req.query.page?req.query.page:1)
+			});
+
+			console.log(productos);
+			res.status(200).json(productos);
+			
+		} catch (error) {
+			console.log(error);
+			next();
+		}
 	},
 
 	// TRAER POR ID
@@ -19,6 +49,7 @@ module.exports = {
 
 	// CREAR
 	create: async function (req, res, next) {
+		
 		let producto = new productoModel({
 			nombre: req.body.nombre,
 			descripcion: req.body.descripcion,
@@ -26,13 +57,27 @@ module.exports = {
 			cantidad: req.body.cantidad,
 			categoria: req.body.categoria,
 			destacado: req.body.destacado,
+			imagen: req.body.imagen
 		});
-		let data = await producto.save();
-		res.status(201).json({
-			status: "success",
-			message: "Se creo el producto correctamente",
-			data: data,
-		});
+
+		console.log("campo imagen req: ", req.body.imagen, "campo nombre req: ", req.body.nombre)
+		
+		try {
+			let data = await producto.save();
+			res.status(201).json({
+				status: "success",
+				message: "Se creo el producto correctamente",
+				data: data,
+			});
+			
+			console.log("req.body.imagen: ", req.body.imagen);
+			console.log("resultado res.body de create producto: ", res.body);
+
+			
+		} catch (error) {
+			res.json(error);
+			console.log("Create error: " + error);
+		}
 	},
 
 	// ACTUALIZAR
@@ -63,13 +108,19 @@ module.exports = {
 		} catch (error) {
 			console.log("Ocurrió un error: " + error);
 		}
-    },
+	},
 
 	// TRAER DESTACADOS
 	getDestacados: async function (req, res, next) {
-		let productos = await productoModel.find({ destacado: 1 });
-		console.log(productos);
-		res.status(200).json(productos);
+		try {
+			let productos = await productoModel.find({ destacado: 1 });
+			await categoriaModel.populate(productos, { path: "categoria" });
+			console.log(productos);
+			res.status(200).json(productos);
+		} catch (error) {
+			console.log(error);
+			res.json(error);
+		}
 	},
 
 	// delete
@@ -77,12 +128,7 @@ module.exports = {
 	// POR PRECIO MAX MIN
 	getByPrice: async function (req, res, next) {
 		try {
-			let productosEncontrados = await productoModel
-				.find({})
-				.where("precio")
-				.gte(req.params.min)
-				.where("precio")
-				.lte(req.params.max);
+			let productosEncontrados = await productoModel.find({}).where("precio").gte(req.params.min).where("precio").lte(req.params.max);
 
 			if (productosEncontrados != "") {
 				console.log("Se encontraron productos: ", productosEncontrados);
@@ -132,4 +178,38 @@ module.exports = {
 			console.log("Ha ocurrido un error: " + error);
 		}
 	},
+
+	upload: async function(req, res, next){
+		try {
+			var path = "";
+			
+			upload(req, res, function(err){
+				// An error occurred when uploading
+				if (err) {
+					console.log("Ocurrio un error en metodo upload: ", err);
+					next();
+				}
+				// No error occured.
+				path = req.file.path;
+				res.status(201).json({
+					status: "success",
+					message: "Imagen cargada exitosamente",
+					data: req.file
+				});
+
+				console.log("REQ.FILE: ", req.file)
+
+			})
+		} catch (error) {
+			console.log("OCURRIO UN ERROR POR CATCH: ", error);
+			res.json({
+				status: "error",
+				message:"Ocurrio un error: ", error
+			})
+			next(error);
+			
+		}
+	}
+
+
 };
