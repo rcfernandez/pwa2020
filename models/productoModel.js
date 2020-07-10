@@ -3,12 +3,12 @@ const mongoose = require("../bin/mongodb");
 const Schema = mongoose.Schema;
 
 const imagenSchema = new Schema({ 
-  fieldname: "String",
-  originalname: "String",
-  encoding: "String",
-  mimetype: "String",
   destination: "String",
+  encoding: "String",
+  fieldname: "String",
   filename: "String",
+  mimetype: "String",
+  originalname: "String",
   path: "String",
   size: "String"
 });
