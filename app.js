@@ -12,6 +12,7 @@ var productosRouter = require("./routes/productos");
 var usuariosRouter = require("./routes/usuarios");
 var ventasRouter = require("./routes/ventas");
 var categoriasRouter = require("./routes/categorias");
+var uploadRouter = require("./routes/upload");
 const { Server } = require("http");
 
 var app = express();
@@ -30,7 +31,7 @@ app.use(cors({
 
 app.use(logger("dev"));
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 
@@ -43,6 +44,7 @@ app.use("/productos", productosRouter);
 app.use("/usuarios", usuariosRouter);
 app.use("/ventas", ventasRouter);
 app.use("/categorias", categoriasRouter);
+app.use("/upload", uploadRouter);
 
 // VALIDAR USUARIO
 function validateUser(req, res, next) {

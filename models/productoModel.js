@@ -16,23 +16,31 @@ const imagenSchema = new Schema({
 const productoSchema = new Schema({
   nombre: {
     type: String,
-    require: [true, "El campo Descripción es requerido"],
+    require: [true, "El campo Nombre es requerido"],
   },
   descripcion: {
     type: String,
     require: [true, "El campo Descripción es requerido"],
   },
+  sku: {
+    type: String,
+    require: [true, "El campo SKU es requerido"],
+  },
+  categoria: {
+    type: Schema.ObjectId, // ID
+    ref: "categorias", // hace referencia a la coleccion
+  },
   precio: {
+    type: Number,
+    default: 0,
+  },
+  oferta: {
     type: Number,
     default: 0,
   },
   cantidad: {
     type: Number,
     default: 0,
-  },
-  categoria: {
-    type: Schema.ObjectId, // ID
-    ref: "categorias", // hace referencia a la coleccion
   },
   destacado: {
     type: Number,

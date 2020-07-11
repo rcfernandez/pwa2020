@@ -3,8 +3,17 @@ const bcrypt = require('bcrypt');
 
 const Schema = mongoose.Schema;
 
+const imagenSchema = new Schema({ 
+	destination: "String",
+	encoding: "String",
+	fieldname: "String",
+	filename: "String",
+	mimetype: "String",
+	originalname: "String",
+	path: "String",
+	size: "String"
+  });
 
-// Declare the Schema of the Mongo model
 var usuarioSchema = new Schema({
 	
 	usuario: {
@@ -37,7 +46,10 @@ var usuarioSchema = new Schema({
 
 	password: {
 		type: String,
+		required: [true, "El campo Email es requerido"],
 	},
+	rol: Number,
+	imagen: imagenSchema,
 });
 
 usuarioSchema.pre('save',function(next){

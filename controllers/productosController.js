@@ -12,8 +12,8 @@ module.exports = {
 		try {
 			let productos = await productoModel.find({});
 			await categoriaModel.populate(productos, { path: 'categoria' });
-			console.log(productos);
 			res.status(200).json(productos);
+			console.log(productos);
 		} catch (error) {
 			console.log(error);
 			next();
@@ -27,14 +27,15 @@ module.exports = {
 				{
 					//select: '' ,
 					populate: 'categoria',
-					limit: 50,
-					sort: { nombre: 1 },
+					limit: 5,
+					// sort: { nombre: 1 },
 					page: req.query.page ? req.query.page : 1,
 				}
 			);
 
-			console.log(productos);
 			res.status(200).json(productos);
+			console.log(productos);
+
 		} catch (error) {
 			console.log(error);
 			next();
@@ -43,9 +44,14 @@ module.exports = {
 
 	// TRAER POR ID
 	getById: async function (req, res, next) {
-		let producto = await productoModel.findById(req.params.id);
-		console.log(producto);
-		res.status(200).json(producto);
+		try {
+			let producto = await productoModel.findById(req.params.id);
+			res.status(200).json(producto);
+			console.log(producto);
+			
+		} catch (error) {
+			console.log(`Ha ocurrido un error: ${error}`);
+		}
 	},
 
 	// CREAR
@@ -71,25 +77,25 @@ module.exports = {
 		let producto = new productoModel({
 			nombre: req.body.nombre,
 			descripcion: req.body.descripcion,
-			precio: req.body.precio ? req.body.precio : 0,
-			cantidad: req.body.cantidad ? req.body.cantidad : 0,
+			sku: req.body.sku ? req.body.sku : "n/c",
 			categoria: req.body.categoria ? req.body.categoria : defaultCategoria,
+			precio: req.body.precio ? req.body.precio : 0,
+			oferta: req.body.oferta ? req.body.oferta : 0,
+			cantidad: req.body.cantidad ? req.body.cantidad : 0,
 			destacado: req.body.destacado ? req.body.destacado : 0,
-			imagen: req.body.imagen ? req.body.imagen : defaultImage ,
+			imagen: req.body.imagen ? req.body.imagen : defaultImage,
 		});
 
-		console.log('campo imagen req: ', req.body.imagen, 'campo nombre req: ', req.body.nombre);
+		console.log('req.body.imagen: ', req.body.imagen, 'req.body.nombre: ', req.body.nombre);
 
 		try {
 			let data = await producto.save();
 			res.status(201).json({
 				status: 'success',
-				message: 'Se creo el producto correctamente',
+				message: 'El Producto se creo correctamente',
 				data: data,
 			});
 
-			console.log('req.body.imagen: ', req.body.imagen);
-			console.log('resultado res.body de create producto: ', res.body);
 		} catch (error) {
 			res.json(error);
 			console.log('Create error: ' + error);
@@ -106,6 +112,7 @@ module.exports = {
 				data: data,
 			});
 			console.log(data);
+
 		} catch (error) {
 			console.log(error);
 		}
@@ -121,6 +128,7 @@ module.exports = {
 				data: data,
 			});
 			console.log(data);
+
 		} catch (error) {
 			console.log('Ocurrió un error: ' + error);
 		}
@@ -133,13 +141,12 @@ module.exports = {
 			await categoriaModel.populate(productos, { path: 'categoria' });
 			console.log(productos);
 			res.status(200).json(productos);
+
 		} catch (error) {
 			console.log(error);
 			res.json(error);
 		}
 	},
-
-	// delete
 
 	// POR PRECIO MAX MIN
 	getByPrice: async function (req, res, next) {

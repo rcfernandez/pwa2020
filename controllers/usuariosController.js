@@ -6,32 +6,41 @@ module.exports = {
 	// TRAER TODOS LOS USUARIOS
 	getAll: async function (req, res, next) {
 		try {
-			let usuarios = await usuarioModel.find({});
-			res.status(200).json(usuarios);
-			console.log(usuarios);
+			let data = await usuarioModel.find({});
+			res.status(200).json({
+				status: "success",
+				message: "Listado de usuarios correcto",
+				data: data
+			});
+			console.log('Usuarios mostrados correctamente: ', data);
 
 		} catch (error) {
-			console.log(error);
+			console.log('Ocurrio un error al traer listado: ', error);
 		}
 	},
 
 	getAllPaginate: async function (req, res, next) {
 		try {
-			let usuarios = await usuarioModel.paginate({},{
-				limit: 5,
-				sort:{usuario:1},
-				page:(req.query.page?req.query.page:1)
+			let usuarios = await usuarioModel.paginate(
+			{},
+			{
+				limit: 10,
+				//sort: { usuario:1 },
+				page: req.query.page ? req.query.page : 1
 			});
 
-			res.status(200).json(usuarios);
-			console.log(usuarios);
+			res.status(200).json({
+				status: "success",
+				message: "Listado de usuarios correcto",
+				data: usuarios
+			});
+			console.log('Usuarios paginados mostrados correctamente: ', usuarios);
 
 		} catch (error) {
-			console.log(error);
+			console.log('Ocurrio un error al traer listado paginado: ', error);
 		}
 	},
 
-	// TRAER USUARIO POR ID
 	getById: async function (req, res, next) {
 		try {
 			let usuarios = await usuarioModel.findById(req.params.id);
@@ -43,21 +52,44 @@ module.exports = {
 		}
 	},
 
-	// (CREAR) REGISTRAR USUARIO
 	create: async function (req, res, next) {
+
+		// si no se carga una imagen
+		let defaultImage = {
+			destination: "./public/images/placeholders/",
+			encoding: "7bit",
+			fieldname: "photo",
+			filename: "placeholder-image.png",
+			mimetype: "image/png",
+			originalname: "placeholder-image.png",
+			path: "public\\images\\placeholders\\placeholder-image.png"
+		}
+
 		try {
-			let usuario = await usuarioModel.create({
+			let usuario = new usuarioModel({
 				usuario: req.body.usuario,
 				nombre: req.body.nombre,
 				apellido: req.body.apellido,
 				email: req.body.email,
 				telefono: req.body.telefono,
 				password: req.body.password,
+				imagen: req.body.imagen ? req.body.imagen : defaultImage,
+				rol: req.body.rol ? req.body.rol : 0,
 			});
-			res.status(201).json(usuario);
-			console.log(usuario);
+
+			let data = await usuario.save();
+
+			res.status(201).json({
+				status: "success",
+				message: "Usuario creado correctamente",
+				data: data,
+			});
+
+			console.log(`Usuario creado correctamente: ${data}`);
+
 		} catch (error) {
-			console.log(error);
+			res.json(error);
+			console.log(`Ha ocurrido un error al crear el Usuario: ${error}`);
 		}
 	},
 
@@ -66,12 +98,13 @@ module.exports = {
 			let data = await usuarioModel.findByIdAndUpdate(req.params.id, req.body);
 			res.status(201).json({
 				status: "success",
-				message: "Se actualizo correctamente",
+				message: "El usuario se actualizo correctamente",
 				data: data,
 			});
-			console.log(data);
+			console.log(`Usuario actualizado correctamente: ${data}`);
+
 		} catch (error) {
-			console.log(error);
+			console.log(`Ha ocurrido un error al actualizar: ${error}`);
 		}
 	},
 
@@ -83,9 +116,10 @@ module.exports = {
 				message: "Se eliminó correctamente",
 				data: data,
 			});
-			console.log(data);
+			console.log(`Usuario eliminado correctamente: ${data}`);
+
 		} catch (error) {
-			console.log("Ocurrió un error: " + error);
+			console.log(`Ha ocurrido un error al borrar: ${error}`);
 		}
 	},
 
