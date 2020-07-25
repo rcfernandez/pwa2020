@@ -1,10 +1,13 @@
 var express = require("express");
 var router = express.Router();
 
+
 var productosController = require("../controllers/productosController");
 
-// OTROS
-router.post("/upload", productosController.upload);   
+var authController = require("../controllers/authController");
+var validateToken = authController.validateToken;   // VALIDACION
+
+  
 router.get("/paginado/", productosController.getAllPaginate);   // paginado
 router.get("/destacados/", productosController.getDestacados);   // destacados
 router.get("/precio/:min/:max", productosController.getByPrice);     // por precio
@@ -13,9 +16,9 @@ router.get("/categoria/:id", productosController.getByCategory);     // por cate
 // C.R.U.D.
 router.get("/", productosController.getAll);
 router.get("/:id", productosController.getById);
-router.post("/", productosController.create);
-router.put("/:id", productosController.update);
-router.delete("/:id", productosController.delete);
+router.post("/",validateToken, productosController.create);
+router.put("/:id",validateToken, productosController.update);
+router.delete("/:id",validateToken, productosController.delete);
 
 
 

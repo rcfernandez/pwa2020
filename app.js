@@ -13,7 +13,8 @@ var usuariosRouter = require("./routes/usuarios");
 var ventasRouter = require("./routes/ventas");
 var categoriasRouter = require("./routes/categorias");
 var uploadRouter = require("./routes/upload");
-const { Server } = require("http");
+var authRouter = require("./routes/auth");
+var catalogoRouter = require("./routes/catalogo");
 
 var app = express();
 
@@ -21,7 +22,7 @@ var app = express();
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs");
 
-app.set("secretKey", "pwa2020");
+app.set("secretKey", "pwa2020");	//clave privada para desencriptar 
 
 app.use(cors({
 	origin: "http://localhost:4200", 
@@ -36,21 +37,28 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 
 
-
 //aca se pregunta la ruta primero
-app.use("/", indexRouter); // omitimos porque esta pensado para hacer web
-//app.use('/users', usersRouter);
-app.use("/productos", productosRouter);
-app.use("/usuarios", usuariosRouter);
-app.use("/ventas", ventasRouter);
-app.use("/categorias", categoriasRouter);
-app.use("/upload", uploadRouter);
+app.use("/", indexRouter);
+app.use("/usuarios",validateToken, usuariosRouter);
+app.use("/categorias",validateToken, categoriasRouter);
+app.use("/productos", productosRouter); // esta validado en routes
+app.use("/ventas",validateToken, ventasRouter);
+
+app.use("/upload", uploadRouter); // no validado, no toma token
+app.use("/auth", authRouter);
+// app.use("/checkout/:id");
+app.use("/catalogo", catalogoRouter);
+
 
 // VALIDAR USUARIO
-function validateUser(req, res, next) {
+function validateToken(req, res, next) {
 	jwt.verify(req.headers["x-access-token"], req.app.get("secretKey"), function (err, decoded) {
+		// si no esta el token
 		if (err) {
-			res.json({ message: err.message });
+			res.status(401).json({ 
+				message: err.message 
+			});
+		// si el token es correcto
 		} else {
 			console.log(decoded);
 			req.body.userToken = decoded;
@@ -59,10 +67,13 @@ function validateUser(req, res, next) {
 	});
 }
 
+
+
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
 	next(createError(404));
 });
+
 
 // error handler
 app.use(function (err, req, res, next) {

@@ -27,7 +27,7 @@ module.exports = {
 				{
 					//select: '' ,
 					populate: 'categoria',
-					limit: 5,
+					limit: 10,
 					// sort: { nombre: 1 },
 					page: req.query.page ? req.query.page : 1,
 				}
@@ -179,9 +179,6 @@ module.exports = {
 		}
 	},
 
-	// detalle
-
-	// por categoria
 	getByCategory: async function (req, res, next) {
 		try {
 			let productosEncontrados = await productoModel.find({}).where('categoria', req.params.id);
@@ -190,18 +187,19 @@ module.exports = {
 				console.log('Se encontraron productos: ', productosEncontrados);
 				res.status(200).json({
 					status: 200,
-					message: 'Se encontraron productos: ',
+					message: 'Se encontraron productos',
 					data: productosEncontrados,
 				});
+
 			} else {
-				console.log('no se encontraron productos con esa de esa categoria');
+				console.log('No se encontraron productos con esa de esa categoria');
 				res.status(200).json({
 					status: 200,
-					message: 'no se encontraron productos con esa categoria',
+					message: 'No se encontraron productos con esa categoria',
 					data: null,
 				});
 			}
-			// si da error
+
 		} catch (error) {
 			console.log('Ha ocurrido un error: ' + error);
 		}

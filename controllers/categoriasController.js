@@ -1,21 +1,25 @@
 var categoriaModel = require("../models/categoriaModel");
 
 module.exports = {
-	// TRAER TODO
+
 	getAll: async function (req, res, next) {
 		try {
-			let categorias = await categoriaModel.find({});
+			let data = await categoriaModel.find({});
+			res.status(200).json({
+				status: "success",
+				message: "Listado de usuarios correcto",
+				data: data
+			});
+			console.log('Usuarios mostrados correctamente: ', data);
 
-			res.status(200).json(categorias);
-			console.log(categorias);
 		} catch (error) {
-			console.log("Se ha producido un error en GETALL: ", error);
+			console.log('Ocurrio un error al traer listado: ', error);
 		}
 	},
 
 	getAllPaginate: async function (req, res, next) {
 		try {
-			let categorias = await categoriaModel.paginate(
+			let data = await categoriaModel.paginate(
 				{},
 				{
 					limit: 5,
@@ -24,74 +28,101 @@ module.exports = {
 				}
 			);
 
-			res.status(200).json(categorias);
-			console.log(categorias);
+			res.status(200).json({
+				status: "success",
+				message: "Listado de categorias paginados mostrados correctamente",
+				data: data
+			});
+			console.log('Listado de categorias paginados mostrados correctamente: ', data);
+
 		} catch (error) {
-			console.log(error);
+			console.log('Ocurrio un error al traer el listado: ', error);
 		}
 	},
 
-	// TRAER POR ID
 	getById: async function (req, res, next) {
-		let categoria = await categoriaModel.findById(req.params.id);
-		console.log(categoria);
-		res.status(200).json(categoria);
+		try {
+			let data = await categoriaModel.findById(req.params.id);
+			res.status(200).json({
+				status: "success",
+				message: "Se han mostrados los datos correctamente",
+				data: data
+			});
+			console.log('Se han mostrados los datos correctamente: ', data);
+
+		} catch (error) {
+			console.log('Ocurrio un error al traer los datos: ', error);
+		}
 	},
 
-	// CREAR
 	create: async function (req, res, next) {
+		
+		// imagen default por si no se carga imagen
+		let defaultImage = {
+			destination: "./public/images/placeholders/",
+			encoding: "7bit",
+			fieldname: "photo",
+			filename: "placeholder-image.png",
+			mimetype: "image/png",
+			originalname: "placeholder-image.png",
+			path: "public\\images\\placeholders\\placeholder-image.png"
+		}
+		
+		//crear una subcategoria por default si no se carga alguna
+
 		try {
-			var categoria = new categoriaModel({
+			let categoria = new categoriaModel({
 				descripcion: req.body.descripcion,
-				//subcategorias: req.body.subcategorias
+				imagen: req.body.imagen ? req.body.imagen : defaultImage,
 			});
 
 			let data = await categoria.save();
 
 			res.status(200).json({
-				status: "success Category Created",
-				message: "Categoria creada satisfactoriamente",
+				status: "Success",
+				message: "Datos creados satisfactoriamente",
 				data: data,
 			});
-			console.log("Data: ", data);
+			console.log('Los datos se han creado correctamente: ', data);
+
 		} catch (error) {
-			console.log("Ocurrio un error al crear Categoria: ", error);
+			console.log('Ocurrio un error al crear los datos: ', error);
 		}
 	},
 
-	// ACTUALIZAR
 	update: async function (req, res, next) {
 		try {
-			let data = await categoriaModel.findByIdAndUpdate(
-				req.params.id,
-				req.body
-			);
+			let data = await categoriaModel.findByIdAndUpdate(req.params.id,req.body); // aca se puede remplazar
+
 			res.status(201).json({
 				status: "success",
-				message: "Se actualizo la categoria correctamente",
+				message: "Los datos se han actualizado correctamente",
 				data: data,
 			});
-			console.log(data);
+			console.log('Los datos se han actualizado correctamente: ', data);
+
 		} catch (error) {
-			console.log(error);
+			console.log('Ocurrio un error al actualizar los datos: ', error);
 		}
 	},
 
-	// ELIMINAR
 	delete: async function (req, res, next) {
 		try {
 			let data = await categoriaModel.findByIdAndDelete(req.params.id);
+
 			res.status(201).json({
 				status: "success",
 				message: "Se eliminó la categoria correctamente",
 				data: data,
 			});
-			console.log(data);
+			console.log('Los datos se han borrado correctamente: ', data);
+
 		} catch (error) {
-			console.log("Ocurrió un error: " + error);
+			console.log('Ocurrio un error al borrar los datos: ', error);
 		}
 	},
 
+	
 	// SUBCATEGORIA ////////////////////////////////////
 
 	createSubcategory: async function (req, res, next) {
@@ -101,6 +132,7 @@ module.exports = {
 			console.log("Que llega a req.body: ", req.body);
 
 			let categoria = await categoriaModel.findById(req.params.id);
+
 			delete req.body["_id"];
 			categoria.subcategorias.push(req.body);
 			let data = await categoria.save();
@@ -161,17 +193,11 @@ module.exports = {
 
 	updateSubcategory: async function (req, res, next) {
 		try {
-			// let data = await categoriaModel.findByIdAndUpdate(
-			// 	req.params.id,
-			// 	req.body
-			// );
+			let categoria = await categoriaModel
+				.findOneAndUpdate({ _id: req.params.id, "subcategorias._id": req.body._id },{ "subcategorias.$": req.body });
 
-			let categoria = await categoriaModel.findById(req.params.id);
-			//delete req.body["_id"];
-			categoria.subcategorias.update(req.body);
+			console.log("categoria:: ", categoria)
 			let data = await categoria.save();
-
-			console.log("req.body", req.body);
 
 			res.status(201).json({
 				status: "success",
@@ -179,7 +205,7 @@ module.exports = {
 				data: data,
 			});
 
-			console.log(data);
+			console.log("Se actualizo la subcategoria correctamente: ", data);
 
 		} catch (error) {
 			res.status(201).json({
@@ -193,14 +219,17 @@ module.exports = {
 
 	getSubcategory: async function (req, res, next) {
 		try {
-			let subcategorias = await categoriaModel
-				.findById(req.params.id)
-				.select("subcategorias");
+			let data = await categoriaModel.findById(req.params.id).select("subcategorias");
 
-			res.status(200).json(subcategorias);
-			console.log("Subcategorias: ", subcategorias);
+			res.status(201).json({
+				status: "success",
+				message: "Los datos se han mostrado correctamente",
+				data: data,
+			});
+			console.log('Los datos se han mostrado correctamente: ', data);
+
 		} catch (error) {
-			console.log(error);
+			console.log('Ocurrio un error al mostrar los datos: ', error);
 		}
 	},
 }; // fin module.exports

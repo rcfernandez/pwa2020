@@ -48,8 +48,8 @@ var usuarioSchema = new Schema({
 		type: String,
 		required: [true, "El campo Email es requerido"],
 	},
-	rol: Number,
 	imagen: imagenSchema,
+	rol: Number,
 });
 
 usuarioSchema.pre('save',function(next){

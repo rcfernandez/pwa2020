@@ -124,27 +124,51 @@ module.exports = {
 	},
 
 	// LOGUEAR USUARIO
-	login: async function (req, res, next) {
-		let usuarioBuscado = await usuarioModel.findOne({
-			usuario: req.body.usuario,
-		}); // aca va findOne
-		console.log(usuarioBuscado);
+	// login: async function (req, res, next) {
+	// 	try {
+	// 		let usuarioBuscado = await usuarioModel.findOne({ usuario: req.body.usuario }); // aca va findOne
 
-		if (usuarioBuscado) {
-			//Validar el password
-			if (bcrypt.compareSync(req.body.contraseña, usuarioBuscado.contraseña)) {
-				//Password valido , genero token
-				const token = jwt.sign({ usuario: usuarioBuscado }, req.app.get("secretKey"), { expiresIn: "1h" });
-				res.status(201).json({ token: token });
-			} else {
-				//Password invalido
-				res.json({ message: "Password incorrecto", data: null });
-			}
-		} else {
-			//Arrojar error
-			res.json({ message: "Usuario no existe", data: null });
-		}
-	},
+	// 		if (usuarioBuscado) {
+	// 			//Validar el password
+	// 			if (bcrypt.compareSync(req.body.password, usuarioBuscado.password)) {
+					
+	// 				//Password valido , genero token
+	// 				const token = jwt.sign({ usuario: usuarioBuscado }, req.app.get("secretKey"), { expiresIn: "1h" });
+
+	// 				res.status(201).json({ 
+	// 					status: 201,
+	// 					message: "Ingreso correcto",
+	// 					token: token 
+	// 				});
+	// 				console.log("Ingreso correcto");
+				
+	// 			} else {
+	// 				//Password invalido
+	// 				res.json({ 
+	// 					status: 204,
+	// 					message: "Password incorrecto", 
+	// 					data: null 
+	// 				});
+	// 				console.log("Password incorrecto");
+
+	// 			}
+
+	// 		} else {
+	// 			// si no existe el usuario
+	// 			res.json({ 
+	// 				status: 204,
+	// 				message: "Usuario no existe", 
+	// 				data: null 
+	// 			});
+	// 			console.log("Usuario no existe");
+
+	// 		}
+				
+	// 	} catch (error) {
+	// 		console.log(`Ha ocurrido un error al loguearse: ${error}`);
+	// 	}
+		
+	// },
 
 	// POST login-admin
 
