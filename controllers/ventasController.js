@@ -1,6 +1,7 @@
 var ventaModel = require("../models/ventaModel");
 var usuarioModel = require("../models/usuarioModel");
 var productoModel = require("../models/productoModel");
+const { defaultConfiguration } = require("../app");
 
 module.exports = {
 	// TRAER TODO
@@ -8,8 +9,8 @@ module.exports = {
 
 		try {
 			let ventas = await ventaModel.find({}); 
-			await usuarioModel.populate(ventas, { path: "usuario" }); //ventas es la coleccion y el path el campo que la relaciona
-			await productoModel.populate(ventas, { path: "productos" });
+			// await usuarioModel.populate(ventas, { path: "usuario" }); //ventas es la coleccion y el path el campo que la relaciona
+			// await productoModel.populate(ventas, { path: "productos" });
 
 			res.status(200).json(ventas);
 			console.log(ventas);
@@ -20,13 +21,34 @@ module.exports = {
 		}
 	},
 
+	getSalesByUser: async function (req, res, next) {
+		try {
+			let sales = await ventaModel.find({}).where('usuario._id', req.params.id)
+			
+			res.status(200).json({
+				status:"success",
+				message: "Se trajeron las compras del usuario con exito",
+				data: sales
+			})
+			console.log("Se trajeron las compras del usuario con exito: ", sales);
+
+		} catch (error) {
+			res.json({
+				status: "error",
+				message: "Ocurrio un error al traer las compras del usuario",
+				data: null,
+			});
+			console.log('Ocurrio un error al traer las compras del usuario: ', error);
+		}
+	},
+
 	getAllPaginate: async function (req, res, next) {
 
 		try {
 			let data = await ventaModel.paginate({},{
-				populate:['usuario', 'productos'],
-				limit: 5,
-				sort:{fecha:-1},
+				// populate:['usuario', 'productos'],
+				limit: 10,
+				// sort:{fecha:-1},
 				page:(req.query.page?req.query.page:1)
 			});
 
@@ -54,51 +76,42 @@ module.exports = {
 	// CREAR
 	create: async function (req, res, next) {
 
-		// imagen default por si no se carga imagen
-		let defaultImage = {
-			destination: "./public/images/placeholders/",
-			encoding: "7bit",
-			fieldname: "photo",
-			filename: "placeholder-image.png",
-			mimetype: "image/png",
-			originalname: "placeholder-image.png",
-			path: "public\\images\\placeholders\\placeholder-image.png"
-		}
-
 		try {
-
 			let venta = new ventaModel({
 				fecha: req.body.fecha,
 				usuario: req.body.usuario,
-				productos: req.body.productos,
+				producto: req.body.producto,
 				cantidad: req.body.cantidad,
 				total: req.body.total,
 				medio: req.body.medio,
 				estado: req.body.estado,
-				imagen: req.body.imagen ? req.body.imagen : defaultImage
 			});
 
 			let data = await venta.save();
 
 			res.status(201).json({ 
 				status: "ok", 
-				message: "Datos creados satisfactoriamente",
+				message: "La compra se realizo correctamente",
 				data: data 
 			});
-			console.log('Los datos se han creado correctamente: ', data);
+			console.log("La compra se realizo correctamente", data);
 
 		} catch (error) {
 			res.json({ 
-				status: "Error al cargar la Venta", 
-				data: error.message 
+				status: 'error',
+				message: 'Error al cargar la compra',
+				data: null
 			});
-			console.log('Ocurrio un error al crear los datos: ', error);
+			console.log('Ocurrio un error al crear los datos: ', error.message);
 		}
 	},
 
 	update: async function (req, res, next) {
+
 		try {
+
 			let data = await ventaModel.findByIdAndUpdate(req.params.id, req.body);
+
 			res.status(201).json({
 				status: "success",
 				message: "Los datos se han actualizado correctamente",
@@ -107,7 +120,7 @@ module.exports = {
 			console.log('Los datos se han actualizado correctamente: ', data);
 
 		} catch (error) {
-			console.log('Ocurrio un error al actualizar los datos: ', error);
+			console.log('Ocurrio un error al actualizar los datos: ', error.message);
 		}
 	},
 	

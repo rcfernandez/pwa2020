@@ -5,6 +5,7 @@ var ventasController = require("../controllers/ventasController");
 
 
 router.get("/paginado/", ventasController.getAllPaginate);
+router.get("/usuario/:id", ventasController.getSalesByUser);
 
 router.get("/", ventasController.getAll);
 router.get("/:id", ventasController.getById);

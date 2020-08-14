@@ -19,7 +19,7 @@ var usuarioSchema = new Schema({
 	usuario: {
 		type: String,
 		required: [true, "El campo Usuario es requerido"],
-		unique: true,
+		unique: [true, "El campo Usuario ya existe"]
 	},
 
 	nombre: {
@@ -41,12 +41,13 @@ var usuarioSchema = new Schema({
 	email: {
 		type: String,
 		required: [true, "El campo Email es requerido"],
+		unique: [true, "El campo Email ya existe"],
 		trim: true
 	},
 
 	password: {
 		type: String,
-		required: [true, "El campo Email es requerido"],
+		required: [true, "El campo Password es requerido"],
 	},
 	imagen: imagenSchema,
 	rol: Number,

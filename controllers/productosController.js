@@ -118,7 +118,7 @@ module.exports = {
 		}
 	},
 
-	// ELIMINAR
+	// DELETE productos/
 	delete: async function (req, res, next) {
 		try {
 			let data = await productoModel.findByIdAndDelete(req.params.id);
@@ -134,13 +134,18 @@ module.exports = {
 		}
 	},
 
-	// TRAER DESTACADOS
+	// GET productos/destacados/
 	getDestacados: async function (req, res, next) {
 		try {
 			let productos = await productoModel.find({ destacado: 1 });
 			await categoriaModel.populate(productos, { path: 'categoria' });
+
+			res.status(200).json({
+				status: 'success',
+				message: 'Se trajeron los productos destacados correctamente',
+				data: productos,
+			});
 			console.log(productos);
-			res.status(200).json(productos);
 
 		} catch (error) {
 			console.log(error);
@@ -148,40 +153,66 @@ module.exports = {
 		}
 	},
 
-	// POR PRECIO MAX MIN
-	getByPrice: async function (req, res, next) {
+	// GET productos/buscar/query?nombre=celular&min=100&max=5000&categoria=tecnologia
+	getByQuery: async function (req, res, next) {
 		try {
-			let productosEncontrados = await productoModel
-				.find({})
-				.where('precio')
-				.gte(req.params.min)
-				.where('precio')
-				.lte(req.params.max);
 
-			if (productosEncontrados != '') {
-				console.log('Se encontraron productos: ', productosEncontrados);
+			let nombre = req.query.buscador !== 'null' ? req.query.buscador : ''
+			let min = req.query.minimo !== 'null' ? req.query.minimo : ''
+			let max = req.query.maximo !=='null' ? req.query.maximo : ''
+			let categoria = (req.query.categoria !== 'null' && req.query.categoria !== 'all') ? req.query.categoria : ''
+
+			let query = {};
+
+			if(nombre) {
+				query.nombre = new RegExp(nombre,'i')	// si ingreso nombre
+			}
+
+			if(min && !max) {	// si solo ingreso un precio minimo
+				query.precio = { $gte : min }
+			} else {
+				if(!min && max){	// si solo ingreso un precio maximo
+					query.precio = { $lte : max }
+				} else {
+					if(min && max){		// si ingreso minimo y maximo
+						query.precio = { $gte : min, $lte : max } 
+					}
+				}
+			}
+
+			if(categoria){
+				query.categoria = categoria	// si ingreso categoria
+			}
+
+			let productosEncontrados = await productoModel.find(query)
+			await categoriaModel.populate(productosEncontrados, { path: 'categoria' });
+
+			if (productosEncontrados.length > 0) {
 				res.status(200).json({
 					status: 200,
 					message: 'Se encontraron productos: ',
 					data: productosEncontrados,
 				});
+
 			} else {
-				console.log('no se encontraron productos con ese precio');
-				res.status(200).json({
-					status: 200,
-					message: 'no se encontraron productos con ese precio',
+				res.json({
+					message: 'No se encontraron productos con esos parametros de busqueda',
 					data: null,
 				});
+				console.log('No se encontraron productos con esos parametros de busqueda');
 			}
 			// si da error
 		} catch (error) {
-			console.log('Ha ocurrido un error: ' + error);
+			console.log('Ha ocurrido un error: ' + error.message);
 		}
 	},
 
+	// productos/categoria/:id
 	getByCategory: async function (req, res, next) {
 		try {
+
 			let productosEncontrados = await productoModel.find({}).where('categoria', req.params.id);
+			await categoriaModel.populate(productosEncontrados, { path: 'categoria' });
 
 			if (productosEncontrados != '') {
 				console.log('Se encontraron productos: ', productosEncontrados);
@@ -204,6 +235,35 @@ module.exports = {
 			console.log('Ha ocurrido un error: ' + error);
 		}
 	},
+
+	// productos/buscar/:name
+	// getByName: async function (req, res, next) {
+	// 	try {
+	// 		console.log("req.params.name: ", req.params.name);
+	// 		let productosEncontrados = await productoModel.find({ nombre: new RegExp(req.params.name, 'i')  });
+	// 		await categoriaModel.populate(productosEncontrados, { path: 'categoria' });
+
+	// 		if (productosEncontrados != '') {
+	// 			console.log('Se encontraron productos: ', productosEncontrados);
+	// 			res.status(200).json({
+	// 				status: 200,
+	// 				message: 'Se encontraron productos',
+	// 				data: productosEncontrados,
+	// 			});
+
+	// 		} else {
+	// 			console.log('No se encontraron productos con esa de esa categoria');
+	// 			res.status(200).json({
+	// 				status: 200,
+	// 				message: 'No se encontraron productos con ese nombre',
+	// 				data: null,
+	// 			});
+	// 		}
+
+	// 	} catch (error) {
+	// 		console.log('Ha ocurrido un error: ' + error);
+	// 	}
+	// },
 
 	upload: async function (req, res, next) {
 		try {
@@ -236,5 +296,8 @@ module.exports = {
 			});
 			next(error);
 		}
-	},
+	}
+
+
+
 };
