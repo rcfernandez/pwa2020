@@ -3,15 +3,21 @@ var router = express.Router();
 
 var ventasController = require("../controllers/ventasController");
 
+// validacion
+var authController = require("../controllers/authController");
+var validateToken = authController.validateToken;
+var validateTokenAdmin = authController.validateTokenAdmin;
 
-router.get("/paginado/", ventasController.getAllPaginate);
-router.get("/usuario/:id", ventasController.getSalesByUser);
 
-router.get("/", ventasController.getAll);
-router.get("/:id", ventasController.getById);
-router.post("/", ventasController.create);
-router.put("/:id", ventasController.update);
-router.delete("/:id", ventasController.delete);
+router.get("/paginado/", validateTokenAdmin, ventasController.getAllPaginate);
+router.get("/usuario/:id", validateToken, ventasController.getSalesByUser);     //usertoken
 
-// EXPORT MODULE
+//crud
+router.get("/", validateTokenAdmin, ventasController.getAll);
+router.get("/:id", validateTokenAdmin, ventasController.getById);
+router.post("/", validateToken, ventasController.create);               // usertoken
+router.put("/:id", validateTokenAdmin, ventasController.update);
+router.delete("/:id", validateTokenAdmin, ventasController.delete);
+
+
 module.exports = router;

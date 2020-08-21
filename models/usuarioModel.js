@@ -54,7 +54,7 @@ var usuarioSchema = new Schema({
 });
 
 usuarioSchema.pre('save',function(next){
-    console.log(this.password)
+    // console.log(this.password)
     this.password = bcrypt.hashSync(this.password,10);
     next();
 })

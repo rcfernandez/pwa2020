@@ -4,28 +4,23 @@ var router = express.Router();
 
 var productosController = require("../controllers/productosController");
 
+// validacion
 var authController = require("../controllers/authController");
-var validateToken = authController.validateToken;   // VALIDACION
+var validateToken = authController.validateToken;
+var validateTokenAdmin = authController.validateTokenAdmin;
 
   
-router.post("/upload/", productosController.upload);   // paginado
-router.get("/paginado/", productosController.getAllPaginate);   // paginado
-router.get("/destacados/", productosController.getDestacados);   // destacados
-// router.get("/precio/:min?/:max?", productosController.getByPrice);     // por precio
-router.get("/categoria/:id", productosController.getByCategory);     // por categoria
-router.get("/buscar/query", productosController.getByQuery);     // por query
+router.post("/upload/", productosController.upload); 
+router.get("/paginado/", productosController.getAllPaginate);  
+router.get("/destacados/", productosController.getDestacados);   
+router.get("/categoria/:id", productosController.getByCategory);    
+router.get("/buscar/query", productosController.getByQuery);     
 
 // C.R.U.D.
 router.get("/", productosController.getAll);
 router.get("/:id", productosController.getById);
-router.post("/",validateToken, productosController.create);
-router.put("/:id",validateToken, productosController.update);
-router.delete("/:id",validateToken, productosController.delete);
-
-
-
-//console.log(req.params.id); // cuando enviamos el JSON por parametro /:id
-//console.log(req.query); // cuando enviamos el JSON via query string /?buscar=sarasa
-//console.log(req.body);  //cuando enviamos el JSON via body
+router.post("/",validateTokenAdmin, productosController.create);
+router.put("/:id",validateTokenAdmin, productosController.update);
+router.delete("/:id",validateTokenAdmin, productosController.delete);
 
 module.exports = router;

@@ -12,7 +12,7 @@ module.exports = {
 				message: "Listado de usuarios correcto",
 				data: data
 			});
-			console.log('Usuarios mostrados correctamente: ', data);
+			console.log('Usuarios mostrados correctamente: ');
 
 		} catch (error) {
 			console.log('Ocurrio un error al traer listado: ', error);
@@ -34,7 +34,7 @@ module.exports = {
 				message: "Listado de usuarios correcto",
 				data: usuarios
 			});
-			console.log('Usuarios paginados mostrados correctamente: ', usuarios);
+			console.log('Usuarios paginados mostrados correctamente: ');
 
 		} catch (error) {
 			console.log('Ocurrio un error al traer listado paginado: ', error);
@@ -79,51 +79,94 @@ module.exports = {
 
 			let data = await usuario.save();
 
-			res.status(201).json({
-				status: "success",
-				message: "Usuario creado correctamente",
-				data: data,
-			});
+			if(data) {
+				res.status(201).json({
+					status: "success",
+					message: "Usuario creado correctamente",
+					data: data,
+				});
+				console.log(`\nUsuario creado correctamente`);
 
-			console.log(`Usuario creado correctamente: ${data}`);
+			} else {
+				res.json({
+					status: "unsuccess",
+					message: "No se pudo crear el usuario",
+					data: null,
+				});
+				console.log(`\nNo se pudo crear el usuario`);
+			}
 
 		} catch (error) {
-			res.json(error);
-			console.log(`Ha ocurrido un error al crear el Usuario: ${error}`);
+			res.json({
+				status: "error",
+				message: "Ocurrio un error al crear el usuario",
+				data: null,
+			});
+			console.log(`\nOcurrio un error al crear el usuario: ${error.message}`);
 		}
 	},
 
 	update: async function (req, res, next) {
 		try {
+
 			let data = await usuarioModel.findByIdAndUpdate(req.params.id, req.body);
-			res.status(201).json({
-				status: "success",
-				message: "El usuario se actualizo correctamente",
-				data: data,
-			});
-			console.log(`Usuario actualizado correctamente: ${data}`);
+			
+			if(data) {
+				res.status(201).json({
+					status: "success",
+					message: "Los datos del usuario se modificarion correctamente",
+					data: data,
+				});
+				console.log("\nLos datos del usuario se modificarion correctamente");
+			
+			} else {
+				res.json({
+					status: "unsuccess",
+					message: "No se pudo modificar los datos del usuario",
+					data: null,
+				});
+				console.log("\nNo se pudo modificar los datos del usuario");
+			}
 
 		} catch (error) {
-			console.log(`Ha ocurrido un error al actualizar: ${error}`);
+			res.json({
+				status: "error",
+				message: "Ha ocurrido un error al modificar los datos del usuario",
+				data: null,
+			});
+			console.log(`Ha ocurrido un error al modificar los datos del usuario: ${error.message}`);
 		}
 	},
 
 	delete: async function (req, res, next) {
 		try {
 			let data = await usuarioModel.findByIdAndDelete(req.params.id);
-			res.status(201).json({
-				status: "success",
-				message: "Se eliminó correctamente",
-				data: data,
-			});
-			console.log(`Usuario eliminado correctamente: ${data}`);
+
+			if(data) {
+				res.status(201).json({
+					status: "success",
+					message: "El usuario se eliminó correctamente",
+					data: data,
+				});
+				console.log('\nEl usuario se eliminó correctamente');
+			
+			} else {
+				res.json({
+					status: "unsuccess",
+					message: "No se pudo eliminar el usuario",
+					data: null,
+				});
+				console.log('\nNo se pudo eliminar el usuario');
+			}
 
 		} catch (error) {
-			console.log(`Ha ocurrido un error al borrar: ${error}`);
+			res.json({
+				status: "error",
+				message: "Se produjo un error al eliminar el usuario",
+				data: null,
+			});
+			console.log(`\nSe produjo un error al eliminar el usuario: ${error}`);
 		}
 	},
 
-	// POST login-admin
-
-	// POST registro-admin
 };

@@ -4,16 +4,33 @@ module.exports = {
 
 	getAll: async function (req, res, next) {
 		try {
+
 			let data = await categoriaModel.find({});
-			res.status(200).json({
-				status: "success",
-				message: "Listado de usuarios correcto",
-				data: data
-			});
-			console.log('Usuarios mostrados correctamente: ', data);
+
+			if(data){
+				res.status(200).json({
+					status: "success",
+					message: "Se han traido exitosamente el listado de categorias",
+					data: data
+				});
+				console.log('\nSe han traido exitosamente el listado de categorias');
+
+			} else {
+				res.json({
+					status: "unsuccess",
+					message: "No se ha podido traer el listado de categorias",
+					data: null
+				});
+				console.log("\nNo se ha podido traer el listado de categorias");
+			}
 
 		} catch (error) {
-			console.log('Ocurrio un error al traer listado: ', error);
+			res.json({
+				status: "error",
+				message: 'Ha ocurrido un error al traer listado de categorias',
+				data: null
+			});
+			console.log('\nHa ocurrido un error al traer listado de categorias: ', error.message);
 		}
 	},
 
@@ -28,30 +45,62 @@ module.exports = {
 				}
 			);
 
-			res.status(200).json({
-				status: "success",
-				message: "Listado de categorias paginados mostrados correctamente",
-				data: data
-			});
-			console.log('Listado de categorias paginados mostrados correctamente: ', data);
+			if(data) {
+				res.status(200).json({
+					status: "success",
+					message: "Listado de categorias paginados mostrados correctamente",
+					data: data
+				});
+				console.log('\nListado de categorias paginados mostrados correctamente: ');
+			
+			} else {
+				res.json({
+					status: "unsuccess",
+					message: "No se ha podido traer el listado paginado de categorias",
+					data: null
+				});
+				console.log("\nNo se ha podido traer el listado paginado de categorias");
+			}
 
 		} catch (error) {
-			console.log('Ocurrio un error al traer el listado: ', error);
+			res.json({
+				status: "error",
+				message: "No se ha podido traer el listado paginado de categorias",
+				data: null
+			});
+			console.log('\nOcurrio un error al traer el listado paginado de categorias: ', error.message);
 		}
 	},
 
 	getById: async function (req, res, next) {
 		try {
 			let data = await categoriaModel.findById(req.params.id);
-			res.status(200).json({
-				status: "success",
-				message: "Se han mostrados los datos correctamente",
-				data: data
-			});
-			console.log('Se han mostrados los datos correctamente: ', data);
+			
+			if(data) {
+				res.status(200).json({
+					status: "success",
+					message: " Se trajo el listado de categorias por ID correctamente",
+					data: data
+				});
+				console.log('\n Se trajo el listado de categorias por ID correctamente');
+
+			} else {
+				res.json({
+					status: "unsuccess",
+					message: "No se pudo traer la categoria por ID",
+					data: null
+				});
+				console.log('\nNo se pudo traer la categoria por ID');
+			}
 
 		} catch (error) {
-			console.log('Ocurrio un error al traer los datos: ', error);
+			res.json({
+				status: "error",
+				message: "Ocurrio un error al traer la categoria por ID",
+				data: null,
+			});
+			console.log('\nOcurrio un error al traer la categoria por ID: ', error.message);
+			next();
 		}
 	},
 
@@ -78,31 +127,61 @@ module.exports = {
 
 			let data = await categoria.save();
 
-			res.status(200).json({
-				status: "Success",
-				message: "Datos creados satisfactoriamente",
-				data: data,
-			});
-			console.log('Los datos se han creado correctamente: ', data);
+			if(data) {
+				res.status(201).json({
+					status: "success",
+					message: "La categoria se creo correctamente",
+					data: data,
+				});
+				console.log('\nLa categoria se creo correctamente');
+
+			} else {
+				res.json({
+					status: "unsuccess",
+					message: "No se pudo crear la categoria",
+					data: null,
+				});
+				console.log('\nNo se pudo crear la categoria');
+			}
 
 		} catch (error) {
-			console.log('Ocurrio un error al crear los datos: ', error);
+			res.json({
+				status: "error",
+				message: "Ocurrio un error al crear la categoria",
+				data: null,
+			});
+			console.log('\nOcurrio un error al crear la categoria: ', error.message);
 		}
 	},
 
 	update: async function (req, res, next) {
 		try {
-			let data = await categoriaModel.findByIdAndUpdate(req.params.id,req.body); // aca se puede remplazar
+			let data = await categoriaModel.findByIdAndUpdate(req.params.id,req.body);
 
-			res.status(201).json({
-				status: "success",
-				message: "Los datos se han actualizado correctamente",
-				data: data,
-			});
-			console.log('Los datos se han actualizado correctamente: ', data);
+			if(data) {
+				res.status(201).json({
+					status: "success",
+					message: "La categoria se modifico correctamente",
+					data: data,
+				});
+				console.log('\nLa categoria se modifico correctamente');
+
+			} else {
+				res.json({
+					status: "unsuccess",
+					message: "No se pudo modificar la categoria",
+					data: null,
+				});
+				console.log('\nNo se pudo modificar la categoria');
+			}
 
 		} catch (error) {
-			console.log('Ocurrio un error al actualizar los datos: ', error);
+			res.json({
+				status: "error",
+				message: "Ocurrio un error al modificar la categoria",
+				data: null,
+			});
+			console.log('\nOcurrio un error al modificar la categoria: ', error.message);
 		}
 	},
 
@@ -110,15 +189,30 @@ module.exports = {
 		try {
 			let data = await categoriaModel.findByIdAndDelete(req.params.id);
 
-			res.status(201).json({
-				status: "success",
-				message: "Se eliminó la categoria correctamente",
-				data: data,
-			});
-			console.log('Los datos se han borrado correctamente: ', data);
+			if(data) {
+				res.status(201).json({
+					status: "success",
+					message: "La categoria se elimino correctamente",
+					data: data,
+				});
+				console.log('\nLa categoria se elimino correctamente');
+			
+			} else {
+				res.json({
+					status: "unsuccess",
+					message: "No se pudo eliminar la categoria",
+					data: null,
+				});
+				console.log('\nNo se pudo eliminar la categoria');
+			}
 
 		} catch (error) {
-			console.log('Ocurrio un error al borrar los datos: ', error);
+			res.json({
+				status: "error",
+				message: "Ocurrio un error al eliminar la categoria",
+				data: null,
+			});
+			console.log('\nOcurrio un error al eliminar la categoria: ', error);
 		}
 	},
 
@@ -231,5 +325,8 @@ module.exports = {
 		} catch (error) {
 			console.log('Ocurrio un error al mostrar los datos: ', error);
 		}
-	},
+	}
+
+
+
 }; // fin module.exports

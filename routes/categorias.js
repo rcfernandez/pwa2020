@@ -4,18 +4,27 @@ var router = express.Router();
 var categoriasController = require("../controllers/categoriasController");
 
 
-// subcategorias
-router.put("/borrarsubcategoria/:id", categoriasController.deleteSubcategory);
-router.put("/altasubcategoria/:id", categoriasController.createSubcategory);
-router.put("/modificarsubcategoria/:id", categoriasController.updateSubcategory);
+// validacion
+var authController = require("../controllers/authController");
+var validateToken = authController.validateToken;
+var validateTokenAdmin = authController.validateTokenAdmin;
+
+
+// subcategorias crud
+router.put("/borrarsubcategoria/:id", validateTokenAdmin, categoriasController.deleteSubcategory);
+router.put("/altasubcategoria/:id", validateTokenAdmin, categoriasController.createSubcategory);
+router.put("/modificarsubcategoria/:id", validateTokenAdmin, categoriasController.updateSubcategory);
+
+
 
 // categorias
 router.get("/paginado", categoriasController.getAllPaginate);
 
+// categorias crud
 router.get("/", categoriasController.getAll);
 router.get("/:id", categoriasController.getById);
-router.post("/", categoriasController.create);
-router.put("/:id", categoriasController.update);
-router.delete("/:id", categoriasController.delete);
+router.post("/", validateTokenAdmin, categoriasController.create);
+router.put("/:id", validateTokenAdmin, categoriasController.update);
+router.delete("/:id", validateTokenAdmin, categoriasController.delete);
 
 module.exports = router;

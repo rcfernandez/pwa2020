@@ -3,10 +3,13 @@ var router = express.Router();
 
 var authController = require("../controllers/authController");
 
-// router.post("/registro", usuariosController.create);
+
 router.post("/login", authController.login);
-router.get("/checkUsername/:name", authController.checkUsername);
 router.post("/register/", authController.register);
+router.post("/update/", authController.updateUser);
+
+// chequear si el nombre de usuario existe en la BD
+router.get("/checkUsername/:name", authController.checkUsername);
 
 
 module.exports = router;
